@@ -1,23 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
-
+import car_data from './car_tables/car_data'
+import column_data from './car_tables/column_data'
+import Table from './components/Table'
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='wrapper' >
+      <Table row_data={car_data} column_data={column_data} rowsPerPage={20} />
     </div>
   );
 }

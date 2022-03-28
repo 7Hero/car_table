@@ -1,0 +1,53 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+$dark-tone8: #EEEEF2;
+$dark-tone-80: #484964;
+$ight-theme: #F9F9FC;
+
+body {
+  margin: 20px;
+  background-color: $ight-theme;
+}
+
+table {
+  width:100%;
+  font-size: 14px;
+  border-collapse: collapse !important;
+  border: solid 1px $dark-tone8;
+  border-radius: 16px;
+  white-space: nowrap;
+  table-layout: fixed;
+}
+
+td {
+  border-top-width:1px;
+  border-bottom-width: 1px;
+  padding: 10px 20px 10px 20px;
+  text-overflow: ellipsis;
+  overflow:hidden;
+}
+th {
+  color: $dark-tone-80; 
+  padding:16px 20px 16px 20px;
+}
+tr {
+  transition: all;
+  
+  &:hover {
+    background-color: rgba(100, 77, 237, 0.08);
+  }
+}
+.wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.button_group {
+  margin-top: 20px;
+
+  button + button {
+    margin-left:10px;
+  }
+}
