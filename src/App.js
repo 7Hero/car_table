@@ -4,7 +4,7 @@ import Table from './components/Table'
 function App() {
   return (
     <div className='wrapper' >
-      <Table row_data={car_data} column_data={column_data} rowsPerPage={20} />
+      <Table row_data={car_data} column_data={column_data} rowsPerPage={251} />
     </div>
   );
 }

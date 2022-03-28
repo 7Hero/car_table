@@ -18,17 +18,31 @@ table {
   white-space: nowrap;
   table-layout: fixed;
 }
-
+tbody {
+  display: block;
+  height: 600px;
+  width: 100%;
+  overflow: auto;
+}
+thead, tr{
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  overflow:hidden;
+}
 td {
   border-top-width:1px;
   border-bottom-width: 1px;
   padding: 10px 20px 10px 20px;
   text-overflow: ellipsis;
   overflow:hidden;
+  width: 100px;
 }
 th {
   color: $dark-tone-80; 
   padding:16px 20px 16px 20px;
+  overflow:hidden;
+  width: 100px;
 }
 tr {
   transition: all;
@@ -38,7 +52,7 @@ tr {
   }
 }
 .wrapper {
-  height: 100vh;
+  height: 100%;
   width: 100%;
   display: flex;
   justify-content: center;
