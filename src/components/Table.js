@@ -1,5 +1,5 @@
 import { Dropdown, Button } from "react-bootstrap";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { sortRows } from "../utils/table";
 
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
@@ -78,7 +78,9 @@ const DropdownMenu = ({ setSort }) => {
 const Table = ({ row_data, column_data, rowsPerPage }) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [sort, setSort] = useState({ label: "last_name", type: 0 });
-
+  const [refScrollLeft,setRefScrollLeft] = useState(0)
+  const ref = useRef(null);
+  
   const sortedRows = useMemo(
     () => sortRows(row_data, sort.type, sort.label),
     [sort]
@@ -89,20 +91,20 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
       <DropdownMenu style={{ marginBottom: 10 }} setSort={setSort} />
 
       <div>
-        <table>
-          <thead>
+        <table style={{overflow:'hidden'}}>
+          <thead style={{transform:`translate3d(-${refScrollLeft}px, 0px, 0px)`,}} >
             <tr>
               {column_data.map((el) => (
-                <th key={el.accessor}>{el.label}</th>
+                <th key={el.accesor} >{el.label}</th>
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody ref={ref} onScroll={(e) => {setRefScrollLeft(e.target.scrollLeft)}}>
             {sortedRows
               .slice(pageNumber * rowsPerPage, (pageNumber + 1) * rowsPerPage)
               .map((row) => {
                 return (
-                  <tr>
+                  <tr key={row.id}>
                     {column_data.map((column) => {
                       return (
                         <td key={row[column.accesor]}>{ `${row[column.accesor]}` }</td>

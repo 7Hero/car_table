@@ -7,6 +7,7 @@ $ight-theme: #F9F9FC;
 body {
   margin: 20px;
   background-color: $ight-theme;
+  scrollbar-gutter: stable both-edges;
 }
 
 table {
@@ -41,11 +42,10 @@ td {
 th {
   color: $dark-tone-80; 
   padding:16px 20px 16px 20px;
-  overflow:hidden;
   width: 100px;
 }
 tr {
-  transition: all;
+  transition: all  0.1s ease-in ;
   
   &:hover {
     background-color: rgba(100, 77, 237, 0.08);
