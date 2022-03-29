@@ -14,9 +14,9 @@ body {
 table {
   width:100%;
   font-size: 14px;
-  border-collapse: collapse !important;
+  // border-collapse: collapse !important;
   border: solid 1px $dark-tone8;
-  border-radius: 16px;
+  // border-radius: 16px;
   white-space: nowrap;
   table-layout: fixed;
 }
@@ -38,12 +38,13 @@ td {
   padding: 10px 20px 10px 20px;
   text-overflow: ellipsis;
   overflow:hidden;
-  width: 100px;
+  width: 150px;
 }
 th {
   color: $dark-tone-80; 
   padding:16px 20px 16px 20px;
-  width: 100px;
+  width: 150px;
+  min-width: fit-content;
 }
 tr {
   transition: all  0.1s ease-in ;
@@ -83,4 +84,8 @@ tr {
   & > * + * {
     margin-left: 10px;
   }
+}
+
+.inputWidth {
+  width:200px;
 }

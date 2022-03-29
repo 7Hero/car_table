@@ -14,13 +14,18 @@ export const sortRows = (row_data, type, label) => {
 };
 
 export const filterRows = (row_data, filters) => {
+  
   // if( Object.keys(filters).length === 0 && filters.constructor === Object){
   //   return row_data;
   // }
 
   for( let filter of Object.entries(filters) ) {
     if(filter[1][0] == undefined) continue;
+
     row_data = row_data.filter( row => {
+      if(filter[0] == 'car_make') {
+        return row[filter[0]].toLowerCase().includes(filter[1][0].toLowerCase())
+      }
       return filter[1].includes(row[filter[0]])
     })
   }
@@ -39,7 +44,7 @@ export const year_list = [
   
 ]
 
-export const car_list = [
+const car_lis = [
   "Volkswagen",
   "Oldsmobile",
   "Mercedes-Benz",
@@ -104,3 +109,14 @@ export const car_list = [
   "Panoz",
   "Fiat"
 ]
+
+let car_list = [];
+
+for(let car of car_lis ) {
+  car_list.push({
+    value:car.toLowerCase(),
+    label:car
+  })
+}
+
+export { car_list }
