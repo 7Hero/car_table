@@ -8,6 +8,7 @@ body {
   margin: 20px;
   background-color: $ight-theme;
   scrollbar-gutter: stable both-edges;
+  color: $dark-tone-80;
 }
 
 table {
@@ -21,7 +22,7 @@ table {
 }
 tbody {
   display: block;
-  height: 600px;
+  max-height: 600px;
   width: 100%;
   overflow: auto;
 }
@@ -29,7 +30,7 @@ thead, tr{
   display: table;
   width: 100%;
   table-layout: fixed;
-  overflow:hidden;
+  // overflow:hidden;
 }
 td {
   border-top-width:1px;
@@ -63,5 +64,23 @@ tr {
 
   button + button {
     margin-left:10px;
+  }
+}
+
+.dropdown-item {
+  padding: 4px 16px;
+}
+
+.form-check .form-check-input {
+  padding-right: 4px;
+  margin-left: 0px;
+}
+.form-check-label {
+  padding-left: 16px;
+}
+.space-x-4 {
+  display: flex;
+  & > * + * {
+    margin-left: 10px;
   }
 }

@@ -1,7 +1,6 @@
-import { Dropdown, Button } from "react-bootstrap";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { sortRows } from "../utils/table";
-
+import { Dropdown, Button, FormCheck } from "react-bootstrap";
+import { useEffect, useMemo, useState } from "react";
+import { sortRows, filterRows, listofUniqueValues, car_list } from "../utils/table";
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {
     switch (direction) {
@@ -45,7 +44,37 @@ const Pagination = ({
     </div>
   );
 };
-
+const DropdownRadioGroup = ({ list, accesor, setFilter, label }) => {
+  const [items, setItems] = useState([]);
+  const [didMount, setdidMount] = useState(false);
+  useEffect(() => {
+    if(didMount){
+      setFilter( previous => ({...previous, [accesor]:items}) );
+    } else {
+      setdidMount(true);
+    }
+  },[items])
+  return (
+    <Dropdown style={{ marginBottom: 10 }}>
+      <Dropdown.Toggle id="dropdown-basic"> {label} </Dropdown.Toggle>
+      <Dropdown.Menu style={{overflowY:'auto',overflowX:'hidden',maxHeight:'400px',width:'fit-content',paddingRight:'10px'}}>
+        {list.map((el) => {
+          return (
+            <FormCheck
+              type="checkbox"
+              id={el}
+              label={el}
+              className="dropdown-item"
+              onClick={(e) => {
+                e.target.checked ? setItems([el,...items]) : setItems(items.filter((e )=> e != el));
+              }}
+            />
+          );
+        })}
+      </Dropdown.Menu>
+    </Dropdown>
+  );
+};
 const DropdownMenu = ({ setSort }) => {
   return (
     <Dropdown style={{ marginBottom: 10 }}>
@@ -75,31 +104,40 @@ const DropdownMenu = ({ setSort }) => {
   );
 };
 
+
 const Table = ({ row_data, column_data, rowsPerPage }) => {
+
   const [pageNumber, setPageNumber] = useState(0);
   const [sort, setSort] = useState({ label: "last_name", type: 0 });
-  const [refScrollLeft,setRefScrollLeft] = useState(0)
-  const ref = useRef(null);
+  const [filter, setFilter] = useState({});
+  const [refScrollLeft, setRefScrollLeft] = useState(0);
+  const filteredRows = useMemo( () => filterRows(row_data,filter), [filter]);
+  const sortedRows = useMemo( () => sortRows(filteredRows, sort.type, sort.label), [sort,filter]);
   
-  const sortedRows = useMemo(
-    () => sortRows(row_data, sort.type, sort.label),
-    [sort]
-  );
 
   return (
     <div>
-      <DropdownMenu style={{ marginBottom: 10 }} setSort={setSort} />
-
+      <div className="space-x-4">
+        <DropdownMenu style={{ marginBottom: 10 }} setSort={setSort} />
+        <DropdownRadioGroup list={["Male", "Female"]} accesor="gender" label='Gender' setFilter={setFilter} />
+        <DropdownRadioGroup list={car_list} accesor="car_make" label='Car Maker' setFilter={setFilter} />
+      </div>
       <div>
-        <table style={{overflow:'hidden'}}>
-          <thead style={{transform:`translate3d(-${refScrollLeft}px, 0px, 0px)`,}} >
+        <table style={{ overflow: "hidden" }}>
+          <thead
+            style={{ transform: `translate3d(-${refScrollLeft}px, 0px, 0px)` }}
+          >
             <tr>
               {column_data.map((el) => (
-                <th key={el.accesor} >{el.label}</th>
+                <th key={el.accesor}>{el.label}</th>
               ))}
             </tr>
           </thead>
-          <tbody ref={ref} onScroll={(e) => {setRefScrollLeft(e.target.scrollLeft)}}>
+          <tbody
+            onScroll={(e) => {
+              setRefScrollLeft(e.target.scrollLeft);
+            }}
+          >
             {sortedRows
               .slice(pageNumber * rowsPerPage, (pageNumber + 1) * rowsPerPage)
               .map((row) => {
@@ -107,7 +145,9 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
                   <tr key={row.id}>
                     {column_data.map((column) => {
                       return (
-                        <td key={row[column.accesor]}>{ `${row[column.accesor]}` }</td>
+                        <td key={row[column.accesor]}>{`${
+                          row[column.accesor]
+                        }`}</td>
                       );
                     })}
                   </tr>
@@ -120,11 +160,11 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}
         rowsPerPage={rowsPerPage}
-        rowsNumber={row_data.length}
+        rowsNumber={sortedRows.length}
       />
       <p style={{ marginTop: 10 }}>
         Showing {pageNumber * rowsPerPage} to {(pageNumber + 1) * rowsPerPage}{" "}
-        of {row_data.length} results
+        of {sortedRows.length} results
       </p>
     </div>
   );
