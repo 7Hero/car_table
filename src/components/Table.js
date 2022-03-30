@@ -1,5 +1,5 @@
 import { Dropdown, Button, FormCheck } from "react-bootstrap";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   sortRows,
   filterRows,
@@ -121,17 +121,20 @@ const DropdownMenu = ({ setSort }) => {
   );
 };
 
+
 const Table = ({ row_data, column_data, rowsPerPage }) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [sort, setSort] = useState({ label: "last_name", type: 0 });
   const [filter, setFilter] = useState({});
+  const selectRef = useRef(null);
+
   const [refScrollLeft, setRefScrollLeft] = useState(0);
   const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
   const sortedRows = useMemo(
     () => sortRows(filteredRows, sort.type, sort.label),
     [sort, filter]
   );
-
+  
   return (
     <div>
       <div className="space-x-4">
@@ -148,10 +151,18 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
           label="Car Maker"
           setFilter={setFilter}
         /> */}
-        <Select 
+        <Select
+          ref={selectRef}
           options={car_list} 
           className='inputWidth'
-          onChange={(e)=> setFilter( previous => ({...previous, 'car_make':[e.label]}))}
+          isClearable={true}
+          onChange={(e, actions)=> {
+              if(actions.action == 'clear'){
+                return setFilter( previous => ({...previous, 'car_make':[]}))
+              }
+              setFilter( previous => ({...previous, 'car_make':[e.value]}))
+            }
+          }
         />
         {/* <input onChange={(e)=> setFilter( previous => ({...previous, 'car_make':[e.target.value]}))}/> */}
       </div>
