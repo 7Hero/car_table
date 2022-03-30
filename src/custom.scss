@@ -89,3 +89,31 @@ tr {
 .inputWidth {
   width:200px;
 }
+
+
+
+.slider {
+  height:5px;
+  background: #ddd;
+  border-radius: 5px;
+  position:relative;
+  .progress {
+    height:5px;
+    position:absolute;
+    left:35%;
+    right:25%;
+    background: blue;
+  }
+}
+
+.rangeslider input {
+  position: absolute;
+  top:-5px;
+  width:100%;
+  appearance: none;
+  background:none;
+  pointer-events: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  pointer-events: auto;
+}

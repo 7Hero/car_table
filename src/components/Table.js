@@ -1,11 +1,11 @@
 import { Dropdown, Button, FormCheck } from "react-bootstrap";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  sortRows,
-  filterRows,
-  car_list,
-} from "../utils/table";
+import { sortRows, filterRows, listofUniqueValues } from "../utils/table";
+import YearPicker from "@mui/lab/YearPicker";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Select from "react-select";
+import { Slider } from "@mui/material";
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {
     switch (direction) {
@@ -121,22 +121,75 @@ const DropdownMenu = ({ setSort }) => {
   );
 };
 
-
+const RangePicker = ({ options }) => {
+  const { min, max } = options;
+  const [minValue, setMinValue] = useState(min);
+  const [maxValue, setMaxValue] = useState(max);
+  return (
+    <div style={{ width: "300px", position: "relative" }}>
+      <div className="slider">
+        <div
+          style={{
+            position: "absolute",
+            top: "15px",
+            left: `${((minValue - min) / (max - min)) * 100}%-5px`,
+          }}
+        >
+          {" "}
+          {minValue}{" "}
+        </div>
+        <div
+          className="progress"
+          style={{
+            left: `${((minValue - min) * 100) / (max - min) + 1}%`,
+            right: `${101 - ((maxValue - min) * 100) / (max - min)}%`,
+          }}
+        ></div>
+      </div>
+      <div className="rangeslider">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={minValue}
+          onChange={(e) => {
+            setMinValue(e.target.value);
+          }}
+        ></input>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={maxValue}
+          onChange={(e) => {
+            setMaxValue(e.target.value);
+          }}
+        ></input>
+      </div>
+    </div>
+  );
+};
 const Table = ({ row_data, column_data, rowsPerPage }) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [sort, setSort] = useState({ label: "last_name", type: 0 });
   const [filter, setFilter] = useState({});
+  const [value, setValue] = useState([1000, 1000000]);
   const selectRef = useRef(null);
-
   const [refScrollLeft, setRefScrollLeft] = useState(0);
   const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
   const sortedRows = useMemo(
     () => sortRows(filteredRows, sort.type, sort.label),
     [sort, filter]
   );
-  
+
+  const year_list = useMemo(
+    () => listofUniqueValues(row_data, "car_model_year"),
+    []
+  );
+  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), []);
   return (
     <div>
+      {/* Filters and Sorts */}
       <div className="space-x-4">
         <DropdownMenu style={{ marginBottom: 10 }} setSort={setSort} />
         <DropdownRadioGroup
@@ -145,27 +198,62 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
           label="Gender"
           setFilter={setFilter}
         />
-        {/* <DropdownRadioGroup
-          list={car_list}
-          accesor="car_make"
-          label="Car Maker"
+        <DropdownRadioGroup
+          list={year_list}
+          accesor="car_model_year"
+          label="Year"
           setFilter={setFilter}
-        /> */}
+        />
+
         <Select
           ref={selectRef}
-          options={car_list} 
-          className='inputWidth'
+          options={car_list}
+          className="inputWidth"
           isClearable={true}
-          onChange={(e, actions)=> {
-              if(actions.action == 'clear'){
-                return setFilter( previous => ({...previous, 'car_make':[]}))
-              }
-              setFilter( previous => ({...previous, 'car_make':[e.value]}))
-            }
-          }
+          onChange={(e) => {
+            setFilter((previous) => ({
+              ...previous,
+              car_make: [e ? e.value : null],
+            }));
+          }}
         />
-        {/* <input onChange={(e)=> setFilter( previous => ({...previous, 'car_make':[e.target.value]}))}/> */}
+        {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <YearPicker sx={{width:300}}
+          date={Date.now()}
+          isDateDisabled={() => false}
+          minDate={new Date('1957-01-01T00:00:00.000')}
+          maxDate={new Date('2022-01-01T00:00:00.000')}
+          onChange={ (newDate) => console.log(newDate)}
+        />
+        </LocalizationProvider> */}
+        {/* <RangePicker options={{min:1000,max:10000}} /> */}
+        <Slider
+          getAriaLabel={() => "Price Range"}
+          valueLabelDisplay="auto"
+          value={value}
+          min={1000}
+          max={100000}
+          sx={{ maxWidth: 300, py: 2.5, mx: "20px" }}
+          valueLabelFormat={(value) => `$ ${value}`}
+          onChange={(e, newValue) => {
+            setValue(newValue);
+          }}
+        />
+        <button
+          className="btn btn-primary"
+          style={{ height: "fit-content" }}
+          onClick={() =>
+            setFilter((previous) => ({
+              ...previous,
+              real_cost: value,
+            }))
+          }
+        >
+          {" "}
+          Filter by Price
+        </button>
       </div>
+      {/* Table */}
       <table style={{ overflow: "hidden" }}>
         <thead
           style={{ transform: `translate3d(-${refScrollLeft}px, 0px, 0px)` }}
@@ -198,6 +286,7 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
             })}
         </tbody>
       </table>
+      {/* Pagination */}
       <Pagination
         pageNumber={pageNumber}
         setPageNumber={setPageNumber}

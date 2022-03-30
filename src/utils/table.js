@@ -1,49 +1,65 @@
 export const sortRows = (row_data, type, label) => {
-  if(type == 0 ) {
+  if (type == 0) {
     return row_data;
   }
-  
-  return row_data.sort((a,b) => {
-    if(a[label] < b[label] ) {
+
+  return row_data.sort((a, b) => {
+    if (a[label] < b[label]) {
       return type;
-    } if (a[label] > b[label]) {
+    }
+    if (a[label] > b[label]) {
       return -type;
     }
     return 0;
-  })
+  });
 };
 
 export const filterRows = (row_data, filters) => {
-  
   // if( Object.keys(filters).length === 0 && filters.constructor === Object){
   //   return row_data;
   // }
 
-  for( let filter of Object.entries(filters) ) {
-    if(filter[1][0] == undefined) continue;
+  for (let filter of Object.entries(filters)) {
+    if (filter[1][0] == undefined) continue;
 
-    row_data = row_data.filter( row => {
-      if(filter[0] == 'car_make') {
-        return row[filter[0]].toLowerCase().includes(filter[1][0].toLowerCase())
+    row_data = row_data.filter((row) => {
+      if(filter[0] == "real_cost"){
+        let number = Number(row[filter[0]].replace(/[^0-9.-]+/g,""));
+        if( number >filter[1][0] && number < filter[1][1]) 
+        return true
+        else return false
       }
-      return filter[1].includes(row[filter[0]])
-    })
+
+      if (filter[0] == "car_make") {
+        return row[filter[0]]
+          .toLowerCase()
+          .includes(filter[1][0].toLowerCase());
+      }
+      return filter[1].includes(row[filter[0]]);
+    });
   }
   return row_data;
-}
+};
 
-export const listofUniqueValues = (row_data,key) => {
+export const listofUniqueValues = (row_data, key) => {
   let arr = new Set();
-  row_data.forEach( el => {
+  row_data.forEach((el) => {
     arr.add(el[key]);
-  })
-  return arr;
-}
+  });
+  if(key == 'car_model_year'){
+    return Array.from(arr).sort();
+  }
+  let car_list = [];
+  for (let car of Array.from(arr)) {
+    car_list.push({
+      value: car.toLowerCase(),
+      label: car,
+    });
+  }
+  return car_list;
+};
 
-export const year_list = [
-  
-]
-
+export const year_list = [];
 const car_lis = [
   "Volkswagen",
   "Oldsmobile",
@@ -107,16 +123,15 @@ const car_lis = [
   "Rolls-Royce",
   "Tesla",
   "Panoz",
-  "Fiat"
-]
+  "Fiat",
+];
 
 let car_list = [];
-
-for(let car of car_lis ) {
+for (let car of car_lis) {
   car_list.push({
-    value:car.toLowerCase(),
-    label:car
-  })
+    value: car.toLowerCase(),
+    label: car,
+  });
 }
 
-export { car_list }
+export { car_list };
