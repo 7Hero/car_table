@@ -2,8 +2,8 @@ export const sortRows = (row_data, type, label) => {
   if (type == 0) {
     return row_data;
   }
-
-  return row_data.sort((a, b) => {
+  let array_for_sort = [...row_data]
+  return array_for_sort.sort((a, b) => {
     if (a[label] < b[label]) {
       return type;
     }

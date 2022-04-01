@@ -1,23 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import {CarService} from '../services/car.service'
 const initialState = {
-  cars:'',
+  cars:[],
   car_list: '',
   gender_list:'',
   year_list:''
 }
 
-export const filterSlice = createSlice({
+export const tableSlice = createSlice({
   name: 'carTable',
   initialState,
   reducers: {
-    fetch: (state) => {
-      state.cars = 
+    fetchCars: (state,action) => {
+      state.cars = [...action.payload]
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { filter } = filterSlice.actions
+export const { fetchCars } = tableSlice.actions
 
-export default sortSlice.reducer 
+export default tableSlice.reducer 

@@ -140,39 +140,39 @@ const RangePicker = ({ options }) => {
   );
 };
 
-const Table = ({ row_data, column_data, rowsPerPage }) => {
+const Table = ({column_data, rowsPerPage }) => {
   const sort = useSelector(state => state.sort)
-
+  const row_data = useSelector( state => state.table.cars);
+  const filter = useSelector( state => state.filter)
   const [pageNumber, setPageNumber] = useState(0);
-  const [filter, setFilter] = useState({});
+  // const [filter, setFilter] = useState({});
   const [refScrollLeft, setRefScrollLeft] = useState(0);
   const [value, setValue] = useState([1000, 1000000]);
   const [isLoading, setLoading] = useState(true);
-
   const selectRef = useRef(null);
 
-  const year_list = useMemo(() => listofUniqueValues(row_data, "car_model_year"),[]);
-  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), []);
+  const year_list = useMemo(() => listofUniqueValues(row_data, "car_model_year"),[row_data]);
+  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), [row_data]);
 
-  const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
-  const sortedRows = useMemo(() => sortRows(filteredRows, sort.type, sort.label),[sort, filter]);
+  const filteredRows = useMemo(() => filterRows(row_data, filter), [filter,row_data]);
+  const sortedRows = useMemo(() => sortRows(filteredRows, sort.type, sort.label),[sort, filter,row_data]);
 
   function fakeRequest() {
     setLoading(true);
     return new Promise(resolve => setTimeout(resolve, Math.random()*1000));
   }
-
   useEffect(() => {
     fakeRequest().then( _ => {
       setLoading(false);
     })
+    
   },[sortedRows])
 
   return (
     <div>
       {/* Filters and Sorts */}
       <div className="space-x-4">
-        <DropdownRadioGroup
+        {/* <DropdownRadioGroup
           list={["Male", "Female"]}
           accesor="gender"
           label="Gender"
@@ -183,9 +183,9 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
           accesor="car_model_year"
           label="Year"
           setFilter={setFilter}
-        />
+        /> */}
 
-        <Select
+        {/* <Select
           ref={selectRef}
           options={car_list}
           className="inputWidth"
@@ -196,9 +196,9 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
               car_make: [e ? e.value : null],
             }));
           }}
-        />
+        /> */}
 
-        <Slider
+        {/* <Slider
           getAriaLabel={() => "Price Range"}
           valueLabelDisplay="auto"
           value={value}
@@ -209,8 +209,8 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
           onChange={(e, newValue) => {
             setValue(newValue);
           }}
-        />
-        <button
+        /> */}
+        {/* <button
           className="btn btn-primary"
           style={{ height: "fit-content" }}
           onClick={() =>
@@ -222,7 +222,7 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
         >
           {" "}
           Filter by Price
-        </button>
+        </button> */}
       </div>
       {/* Table */}
       <table style={{ overflow: "hidden" }}>

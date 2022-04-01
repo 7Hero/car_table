@@ -1,6 +1,4 @@
-
-
-class CarService {
+export class CarService {
 
   static getCars() {
     return new Promise( resolve => {
