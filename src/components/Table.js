@@ -4,6 +4,7 @@ import { sortRows, filterRows, listofUniqueValues } from "../utils/table";
 import Select from "react-select";
 import { Slider } from "@mui/material";
 import Loader from './Loader.js'
+import { useSelector } from "react-redux";
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {
     switch (direction) {
@@ -90,35 +91,6 @@ const DropdownRadioGroup = ({ list, accesor, setFilter, label }) => {
   );
 };
 
-const DropdownMenu = ({ setSort }) => {
-  return (
-    <Dropdown style={{ marginBottom: 10 }}>
-      <Dropdown.Toggle id="dropdown-basic">Sort</Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        <Dropdown.Item
-          onClick={() => setSort({ label: "first_name", type: -1 })}
-        >
-          First Name (asc.)
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() => setSort({ label: "first_name", type: 1 })}
-        >
-          First Name (desc.)
-        </Dropdown.Item>
-        <Dropdown.Item
-          onClick={() => setSort({ label: "last_name", type: -1 })}
-        >
-          Last Name (asc.)
-        </Dropdown.Item>
-        <Dropdown.Item onClick={() => setSort({ label: "last_name", type: 1 })}>
-          Last Name (desc.)
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-};
-
 const RangePicker = ({ options }) => {
   const { min, max } = options;
   const [minValue, setMinValue] = useState(min);
@@ -169,40 +141,37 @@ const RangePicker = ({ options }) => {
 };
 
 const Table = ({ row_data, column_data, rowsPerPage }) => {
+  const sort = useSelector(state => state.sort)
+
   const [pageNumber, setPageNumber] = useState(0);
-  const [sort, setSort] = useState({ label: "last_name", type: 0 });
   const [filter, setFilter] = useState({});
   const [refScrollLeft, setRefScrollLeft] = useState(0);
   const [value, setValue] = useState([1000, 1000000]);
   const [isLoading, setLoading] = useState(true);
+
+  const selectRef = useRef(null);
+
+  const year_list = useMemo(() => listofUniqueValues(row_data, "car_model_year"),[]);
+  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), []);
+
+  const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
+  const sortedRows = useMemo(() => sortRows(filteredRows, sort.type, sort.label),[sort, filter]);
 
   function fakeRequest() {
     setLoading(true);
     return new Promise(resolve => setTimeout(resolve, Math.random()*1000));
   }
 
-  const selectRef = useRef(null);
-  const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
-  const sortedRows = useMemo(
-    () => sortRows(filteredRows, sort.type, sort.label),
-    [sort, filter]
-  );
-
   useEffect(() => {
     fakeRequest().then( _ => {
       setLoading(false);
     })
   },[sortedRows])
-  const year_list = useMemo(
-    () => listofUniqueValues(row_data, "car_model_year"),
-    []
-  );
-  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), []);
+
   return (
     <div>
       {/* Filters and Sorts */}
       <div className="space-x-4">
-        <DropdownMenu style={{ marginBottom: 10 }} setSort={setSort} />
         <DropdownRadioGroup
           list={["Male", "Female"]}
           accesor="gender"
