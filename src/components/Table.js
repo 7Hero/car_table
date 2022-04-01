@@ -1,11 +1,9 @@
 import { Dropdown, Button, FormCheck } from "react-bootstrap";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { sortRows, filterRows, listofUniqueValues } from "../utils/table";
-import YearPicker from "@mui/lab/YearPicker";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import Select from "react-select";
 import { Slider } from "@mui/material";
+import Loader from './Loader.js'
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {
     switch (direction) {
@@ -169,19 +167,32 @@ const RangePicker = ({ options }) => {
     </div>
   );
 };
+
 const Table = ({ row_data, column_data, rowsPerPage }) => {
   const [pageNumber, setPageNumber] = useState(0);
   const [sort, setSort] = useState({ label: "last_name", type: 0 });
   const [filter, setFilter] = useState({});
-  const [value, setValue] = useState([1000, 1000000]);
-  const selectRef = useRef(null);
   const [refScrollLeft, setRefScrollLeft] = useState(0);
+  const [value, setValue] = useState([1000, 1000000]);
+  const [isLoading, setLoading] = useState(true);
+
+  function fakeRequest() {
+    setLoading(true);
+    return new Promise(resolve => setTimeout(resolve, Math.random()*1000));
+  }
+
+  const selectRef = useRef(null);
   const filteredRows = useMemo(() => filterRows(row_data, filter), [filter]);
   const sortedRows = useMemo(
     () => sortRows(filteredRows, sort.type, sort.label),
     [sort, filter]
   );
 
+  useEffect(() => {
+    fakeRequest().then( _ => {
+      setLoading(false);
+    })
+  },[sortedRows])
   const year_list = useMemo(
     () => listofUniqueValues(row_data, "car_model_year"),
     []
@@ -217,16 +228,7 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
             }));
           }}
         />
-        {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <YearPicker sx={{width:300}}
-          date={Date.now()}
-          isDateDisabled={() => false}
-          minDate={new Date('1957-01-01T00:00:00.000')}
-          maxDate={new Date('2022-01-01T00:00:00.000')}
-          onChange={ (newDate) => console.log(newDate)}
-        />
-        </LocalizationProvider> */}
-        {/* <RangePicker options={{min:1000,max:10000}} /> */}
+
         <Slider
           getAriaLabel={() => "Price Range"}
           valueLabelDisplay="auto"
@@ -264,11 +266,13 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
             ))}
           </tr>
         </thead>
-        <tbody
+        {isLoading ? <Loader/> : 
+        <tbody 
           onScroll={(e) => {
             setRefScrollLeft(e.target.scrollLeft);
           }}
         >
+
           {sortedRows
             .slice(pageNumber * rowsPerPage, (pageNumber + 1) * rowsPerPage)
             .map((row) => {
@@ -284,7 +288,7 @@ const Table = ({ row_data, column_data, rowsPerPage }) => {
                 </tr>
               );
             })}
-        </tbody>
+        </tbody> }
       </table>
       {/* Pagination */}
       <Pagination

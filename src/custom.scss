@@ -5,7 +5,6 @@ $dark-tone-80: #484964;
 $ight-theme: #F9F9FC;
 
 body {
-  margin: 20px;
   background-color: $ight-theme;
   scrollbar-gutter: stable both-edges;
   color: $dark-tone-80;
@@ -81,6 +80,11 @@ tr {
 }
 .space-x-4 {
   display: flex;
+  flex-wrap:wrap;
+
+  &:first-child {
+    margin-left:10px;
+  }
   & > * + * {
     margin-left: 10px;
   }
@@ -116,4 +120,31 @@ tr {
 }
 input[type='range']::-webkit-slider-thumb {
   pointer-events: auto;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0%  { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.sidebar {
+  width:20rem;
+  min-height: 100vh;
+  transition: margin 0.25s ease-out
+}
+.border-end {
+  border-right: 1px solid #dee2e6 !important;
+}
+
+.hide-sidebar {
+  margin-left: -20rem;
 }
