@@ -6,7 +6,6 @@ const DropdownMenu = () => {
   return (
     <Dropdown>
       <Dropdown.Toggle id="dropdown-basic">Sort</Dropdown.Toggle>
-
       <Dropdown.Menu>
         <Dropdown.Item
           onClick={() => dispatch(sort({ label: "first_name", type: -1 }))}
