@@ -1,13 +1,18 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { listofUniqueValues } from "../utils/table";
+import { useDispatch, useSelector } from "react-redux"
+import { Dropdown, FormCheck } from "react-bootstrap";
+import { filter } from "../features/filterSlice";
 
-const DropdownRadioGroup = ({ accesor, label }) => {
+const DropdownRadioGroup = ({ accesor, label, list }) => {
+  const row_data = useSelector( state => state.table.cars)
+  const dispatch = useDispatch()
   const [items, setItems] = useState([]);
   const [didMount, setdidMount] = useState(false);
-  const list = useMemo(() => listofUniqueValues(row_data, "car_model_year"),[row_data]);
+  console.log(Array.from(list));
   useEffect(() => {
     if (didMount) {
-      setFilter((previous) => ({ ...previous, [accesor]: items }));
+      dispatch(filter({[accesor]: items }))
     } else {
       setdidMount(true);
     }

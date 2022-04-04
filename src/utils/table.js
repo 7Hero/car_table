@@ -46,9 +46,10 @@ export const listofUniqueValues = (row_data, key) => {
   row_data.forEach((el) => {
     arr.add(el[key]);
   });
-  if(key == 'car_model_year'){
+  if(key == 'car_model_year' || key == 'gender' ){
     return Array.from(arr).sort();
   }
+  
   let car_list = [];
   for (let car of Array.from(arr)) {
     car_list.push({
