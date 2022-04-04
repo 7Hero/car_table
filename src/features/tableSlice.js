@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {CarService} from '../services/car.service'
 const initialState = {
   cars:[],
   car_list: '',

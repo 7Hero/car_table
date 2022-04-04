@@ -1,10 +1,9 @@
-import { Dropdown, Button, FormCheck } from "react-bootstrap";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { sortRows, filterRows, listofUniqueValues } from "../utils/table";
-import Select from "react-select";
-import { Slider } from "@mui/material";
-import Loader from './Loader.js'
+import { Button } from "react-bootstrap";
+import { useEffect, useMemo, useState } from "react";
+import { sortRows, filterRows } from "../utils/table";
+import Loader from "./Loader.js";
 import { useSelector } from "react-redux";
+
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {
     switch (direction) {
@@ -35,59 +34,17 @@ const Pagination = ({
     <div className="button_group">
       <ChangePageButton
         {...rest}
-        disabled={pageNumber == 0}
+        disabled={pageNumber === 0}
         direction="Previous"
         pageNumber={setPageNumber}
       />
       <ChangePageButton
         {...rest}
-        disabled={pageNumber == Math.ceil(rowsNumber / rowsPerPage) - 1}
+        disabled={pageNumber === Math.ceil(rowsNumber / rowsPerPage) - 1}
         direction="Next"
         pageNumber={setPageNumber}
       />
     </div>
-  );
-};
-
-const DropdownRadioGroup = ({ list, accesor, setFilter, label }) => {
-  const [items, setItems] = useState([]);
-  const [didMount, setdidMount] = useState(false);
-  useEffect(() => {
-    if (didMount) {
-      setFilter((previous) => ({ ...previous, [accesor]: items }));
-    } else {
-      setdidMount(true);
-    }
-  }, [items]);
-  return (
-    <Dropdown style={{ marginBottom: 10 }}>
-      <Dropdown.Toggle id="dropdown-basic"> {label} </Dropdown.Toggle>
-      <Dropdown.Menu
-        style={{
-          overflowY: "auto",
-          overflowX: "hidden",
-          maxHeight: "400px",
-          width: "fit-content",
-          paddingRight: "10px",
-        }}
-      >
-        {list.map((el) => {
-          return (
-            <FormCheck
-              type="checkbox"
-              id={el}
-              label={el}
-              className="dropdown-item"
-              onClick={(e) => {
-                e.target.checked
-                  ? setItems([el, ...items])
-                  : setItems(items.filter((e) => e != el));
-              }}
-            />
-          );
-        })}
-      </Dropdown.Menu>
-    </Dropdown>
   );
 };
 
@@ -140,90 +97,37 @@ const RangePicker = ({ options }) => {
   );
 };
 
-const Table = ({column_data, rowsPerPage }) => {
-  const sort = useSelector(state => state.sort)
-  const row_data = useSelector( state => state.table.cars);
-  const filter = useSelector( state => state.filter)
+const Table = ({ column_data, rowsPerPage }) => {
+  const sort = useSelector((state) => state.sort);
+  const row_data = useSelector((state) => state.table.cars);
+  const filter = useSelector((state) => state.filter);
   const [pageNumber, setPageNumber] = useState(0);
-  // const [filter, setFilter] = useState({});
   const [refScrollLeft, setRefScrollLeft] = useState(0);
-  const [value, setValue] = useState([1000, 1000000]);
   const [isLoading, setLoading] = useState(true);
-  const selectRef = useRef(null);
 
-  const year_list = useMemo(() => listofUniqueValues(row_data, "car_model_year"),[row_data]);
-  const car_list = useMemo(() => listofUniqueValues(row_data, "car_make"), [row_data]);
-
-  const filteredRows = useMemo(() => filterRows(row_data, filter), [filter,row_data]);
-  const sortedRows = useMemo(() => sortRows(filteredRows, sort.type, sort.label),[sort, filter,row_data]);
+  const filteredRows = useMemo(
+    () => filterRows(row_data, filter),
+    [filter, row_data]
+  );
+  const sortedRows = useMemo(
+    () => sortRows(filteredRows, sort.type, sort.label),
+    [sort, filteredRows]
+  );
 
   function fakeRequest() {
     setLoading(true);
-    return new Promise(resolve => setTimeout(resolve, Math.random()*1000));
+    return new Promise((resolve) => setTimeout(resolve, Math.random() * 1000));
   }
+
   useEffect(() => {
-    fakeRequest().then( _ => {
+    fakeRequest().then((_) => {
       setLoading(false);
-    })
-    
-  },[sortedRows])
+    });
+  }, [sortedRows]);
 
   return (
     <div>
-      {/* Filters and Sorts */}
-      <div className="space-x-4">
-        {/* <DropdownRadioGroup
-          list={["Male", "Female"]}
-          accesor="gender"
-          label="Gender"
-          setFilter={setFilter}
-        />
-        <DropdownRadioGroup
-          list={year_list}
-          accesor="car_model_year"
-          label="Year"
-          setFilter={setFilter}
-        /> */}
-
-        {/* <Select
-          ref={selectRef}
-          options={car_list}
-          className="inputWidth"
-          isClearable={true}
-          onChange={(e) => {
-            setFilter((previous) => ({
-              ...previous,
-              car_make: [e ? e.value : null],
-            }));
-          }}
-        /> */}
-
-        {/* <Slider
-          getAriaLabel={() => "Price Range"}
-          valueLabelDisplay="auto"
-          value={value}
-          min={1000}
-          max={100000}
-          sx={{ maxWidth: 300, py: 2.5, mx: "20px" }}
-          valueLabelFormat={(value) => `$ ${value}`}
-          onChange={(e, newValue) => {
-            setValue(newValue);
-          }}
-        /> */}
-        {/* <button
-          className="btn btn-primary"
-          style={{ height: "fit-content" }}
-          onClick={() =>
-            setFilter((previous) => ({
-              ...previous,
-              real_cost: value,
-            }))
-          }
-        >
-          {" "}
-          Filter by Price
-        </button> */}
-      </div>
+      <div className="space-x-4"></div>
       {/* Table */}
       <table style={{ overflow: "hidden" }}>
         <thead
@@ -235,29 +139,31 @@ const Table = ({column_data, rowsPerPage }) => {
             ))}
           </tr>
         </thead>
-        {isLoading ? <Loader/> : 
-        <tbody 
-          onScroll={(e) => {
-            setRefScrollLeft(e.target.scrollLeft);
-          }}
-        >
-
-          {sortedRows
-            .slice(pageNumber * rowsPerPage, (pageNumber + 1) * rowsPerPage)
-            .map((row) => {
-              return (
-                <tr key={row.id}>
-                  {column_data.map((column) => {
-                    return (
-                      <td key={row[column.accesor]}>{`${
-                        row[column.accesor]
-                      }`}</td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-        </tbody> }
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <tbody
+            onScroll={(e) => {
+              setRefScrollLeft(e.target.scrollLeft);
+            }}
+          >
+            {sortedRows
+              .slice(pageNumber * rowsPerPage, (pageNumber + 1) * rowsPerPage)
+              .map((row) => {
+                return (
+                  <tr key={row.id}>
+                    {column_data.map((column) => {
+                      return (
+                        <td key={row[column.accesor]}>{`${
+                          row[column.accesor]
+                        }`}</td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+          </tbody>
+        )}
       </table>
       {/* Pagination */}
       <Pagination

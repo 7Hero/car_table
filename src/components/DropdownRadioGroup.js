@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-import { listofUniqueValues } from "../utils/table";
-import { useDispatch, useSelector } from "react-redux"
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux"
 import { Dropdown, FormCheck } from "react-bootstrap";
 import { filter } from "../features/filterSlice";
 
 const DropdownRadioGroup = ({ accesor, label, list }) => {
-  const row_data = useSelector( state => state.table.cars)
   const dispatch = useDispatch()
   const [items, setItems] = useState([]);
   const [didMount, setdidMount] = useState(false);
@@ -39,7 +37,7 @@ const DropdownRadioGroup = ({ accesor, label, list }) => {
               onClick={(e) => {
                 e.target.checked
                   ? setItems([el, ...items])
-                  : setItems(items.filter((e) => e != el));
+                  : setItems(items.filter((e) => e !== el));
               }}
             />
           );

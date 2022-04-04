@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { car_list } from '../utils/table';
 
 const initialState = {
   toggle: false

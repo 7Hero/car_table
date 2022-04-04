@@ -1,5 +1,5 @@
 export const sortRows = (row_data, type, label) => {
-  if (type == 0) {
+  if (type === 0) {
     return row_data;
   }
   let array_for_sort = [...row_data]
@@ -23,14 +23,14 @@ export const filterRows = (row_data, filters) => {
     if (filter[1][0] == undefined) continue;
 
     row_data = row_data.filter((row) => {
-      if(filter[0] == "real_cost"){
+      if(filter[0] === "real_cost"){
         let number = Number(row[filter[0]].replace(/[^0-9.-]+/g,""));
         if( number >filter[1][0] && number < filter[1][1]) 
         return true
         else return false
       }
 
-      if (filter[0] == "car_make") {
+      if (filter[0] === "car_make") {
         return row[filter[0]]
           .toLowerCase()
           .includes(filter[1][0].toLowerCase());
@@ -46,10 +46,10 @@ export const listofUniqueValues = (row_data, key) => {
   row_data.forEach((el) => {
     arr.add(el[key]);
   });
-  if(key == 'car_model_year' || key == 'gender' ){
+  if(key === 'car_model_year' || key === 'gender' ){
     return Array.from(arr).sort();
   }
-  
+
   let car_list = [];
   for (let car of Array.from(arr)) {
     car_list.push({

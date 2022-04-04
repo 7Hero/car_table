@@ -2,9 +2,9 @@ import column_data from "./car_tables/column_data";
 import Table from "./components/Table";
 import MainLayout from "./layouts/MainLayout";
 
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toggle } from "./features/sidebarSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CarService } from "./services/car.service";
 import { fetchCars } from "./features/tableSlice";
 
