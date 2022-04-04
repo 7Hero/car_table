@@ -15,9 +15,9 @@ export const sortRows = (row_data, type, label) => {
 };
 
 export const filterRows = (row_data, filters) => {
-  // if( Object.keys(filters).length === 0 && filters.constructor === Object){
-  //   return row_data;
-  // }
+  if( Object.keys(filters).length === 0 && filters.constructor === Object){
+    return row_data;
+  }
 
   for (let filter of Object.entries(filters)) {
     if (filter[1][0] == undefined) continue;

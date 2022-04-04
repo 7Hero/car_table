@@ -10,11 +10,14 @@ export const filterSlice = createSlice({
   reducers: {
     filter: (state, action) => {
       Object.assign(state, action.payload);
+    },
+    reset: (state) => {
+      return initialState
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { filter } = filterSlice.actions
+export const { filter, reset } = filterSlice.actions
 
 export default filterSlice.reducer 
