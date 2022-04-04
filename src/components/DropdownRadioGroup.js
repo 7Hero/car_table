@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux"
+import { useDispatch } from "react-redux";
 import { Dropdown, FormCheck } from "react-bootstrap";
 import { filter } from "../features/filterSlice";
 
 const DropdownRadioGroup = ({ accesor, label, list }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [items, setItems] = useState([]);
+
   const [didMount, setdidMount] = useState(false);
-  console.log(Array.from(list));
   useEffect(() => {
     if (didMount) {
-      dispatch(filter({[accesor]: items }))
+      dispatch(filter({ [accesor]: items }));
     } else {
       setdidMount(true);
     }

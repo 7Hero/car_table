@@ -1,8 +1,9 @@
 import { Button } from "react-bootstrap";
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
+
 import { sortRows, filterRows } from "../utils/table";
 import Loader from "./Loader.js";
-import { useSelector } from "react-redux";
 
 const ChangePageButton = ({ direction, pageNumber, disabled }) => {
   const handlePagination = () => {

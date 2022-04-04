@@ -1,6 +1,7 @@
 import { Slider } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+
 import { filter } from "../features/filterSlice";
 
 const PriceRange = () => {
