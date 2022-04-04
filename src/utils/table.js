@@ -31,9 +31,7 @@ export const filterRows = (row_data, filters) => {
       }
 
       if (filter[0] === "car_make") {
-        return row[filter[0]]
-          .toLowerCase()
-          .includes(filter[1][0].toLowerCase());
+        return filter[1].includes(row[filter[0]].toLowerCase())
       }
       return filter[1].includes(row[filter[0]]);
     });

@@ -35,8 +35,11 @@ const Sidebar = () => {
           placeholder="Search car"
           className="inputWidth"
           isClearable={true}
+          isMulti={true}
           onChange={(e) => {
-            dispatch(filter({ car_make: [e ? e.value : null] }));
+            const arr = e.map(el => el = el.value)
+            console.log(arr)
+            dispatch(filter({ car_make: e ? arr : null }));
           }}
         />
         <DropdownMenu />
