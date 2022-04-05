@@ -10,7 +10,7 @@ import { listofUniqueValues } from "../utils/table";
 import DropdownRadioGroup from "./DropdownRadioGroup";
 
 const filterConfig = {
-  ignoreCase:false,
+  ignoreCase:true,
   ignoreAccents:false,
   trim: false,
   matchFrom: 'start'
