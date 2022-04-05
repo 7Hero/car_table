@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import Select from "react-select";
+import Select, {createFilter} from "react-select";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 
@@ -8,6 +8,14 @@ import DropdownMenu from "./DropdownMenu";
 import { filter } from "../features/filterSlice";
 import { listofUniqueValues } from "../utils/table";
 import DropdownRadioGroup from "./DropdownRadioGroup";
+
+const filterConfig = {
+  ignoreCase:false,
+  ignoreAccents:false,
+  trim: false,
+  matchFrom: 'start'
+};
+
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -36,6 +44,7 @@ const Sidebar = () => {
           className="inputWidth"
           isClearable={true}
           isMulti={true}
+          filterOption={createFilter(filterConfig)}
           onChange={(e) => {
             const arr = e.map(el => el = el.value)
             console.log(arr)
